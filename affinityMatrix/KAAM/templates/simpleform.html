@@ -1,0 +1,136 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% block title %}{{ title }} | {% trans 'N.O.T.' %}{% endblock %}
+{% block branding %}
+<h1 id="site-name">{% trans '<img src="/images/logo.png" width=50> Knowledge and affinity matrix ' %}{{ titleHead }}</h1>
+{% endblock %}
+{% block extrahead %}
+<script src="/scripts/jquery-latest.js" type="text/javascript"></script>
+<script type="text/javascript" language="javascript" src="/scripts/DataTables-1.8.2/media/js/jquery.dataTables.min.js"></script>
+<script src="/scripts/DataTables-1.8.2/extras/TableTools/media/js/ZeroClipboard.js" charset="utf-8" type="text/javascript"></script>
+<script src="/scripts/DataTables-1.8.2/extras/TableTools/media/js/TableTools.js" charset="utf-8" type="text/javascript"></script>
+<!-- <script src="/scripts/JQuery-DataTables-ColumnFilter/media/js/jquery.dataTables.columnFilter.js" type="text/javascript">type="text/javascript"></script>-->
+<link href="/scripts/demo_table.css" rel="stylesheet" type="text/css" />
+
+<script type="text/javascript">
+$(document).ready(function() {
+
+    $('#navze li').hover(
+        function () {
+            //show its submenu
+            $('ul', this).slideDown(100);
+ 
+        }, 
+        function () {
+            //hide its submenu
+            $('ul', this).slideUp(100);         
+        }
+    );
+        $('#demo').html( '<table cellpadding="0" cellspacing="0" border="0" class="display" id="modcod"></table>' );
+    $('#modcod').dataTable( {
+    	"iDisplayLength": -1,
+    	"aLengthMenu" : [[10, 25, 50, -1], [10, 25, 50, "All"]],
+    	"bStateSave": true,
+		"sDom": 'T<"clear">lfrtip',
+		"oTableTools": {
+			"sSwfPath": "/scripts/DataTables-1.8.2/extras/TableTools/media/swf/copy_cvs_xls_pdf.swf"
+		},
+        "aaData": [
+         {% for entry in data %}
+        
+    	       		[
+			  	       {% for x in entry %}
+    	       			
+    	       				"{{ x }}", 
+			        	  {% endfor %}
+    	       		 ],
+    	  {% endfor %}
+        
+        ],
+        "aoColumns": [
+        {% for entry in header %}
+            { "sTitle": "{{ entry }}" },
+        {% endfor %}
+            
+        ]
+        
+        
+    } );   
+    
+    
+    
+    
+    
+} );
+</script> 
+<link href="/scripts/dropDown.css" rel="stylesheet" type="text/css" /> 
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<style type="text/css">
+  html { height: 100% }
+  body { height: 100%; margin: 0px; padding: 0px }
+  #map_canvas { height: 100% }
+</style>
+{% endblock %}
+{% block initialize %}onload="initialize()"{% endblock %}
+
+{% block extrastyle %}
+<style>
+#header{ background-color: #F25B18; border-bottom: solid 3px #999; }
+ 
+#branding h1{ color: #fff; }
+.module h2, .module caption, .inline-group h2 { background:#ccc url(/admin_media/img/admin/nav-bg.gif) bottom left repeat-x; color: #333940; }
+a.section:link, a.section:visited { color: #666666; }
+</style>
+{% endblock %}
+{% block content_header_menu %}
+{% endblock %}
+{% block content %}
+<div id="menu" style="background-color:#F25B18; position:absolute; top:55px; left: 0px; width:100%" >
+{{ menu|safe }}
+</div>
+    <h1>{{ Title }}</h1>
+{{ extrainfo|safe }}    
+    
+{% if form %}
+<form id="form" method="post" action="" enctype="multipart/form-data">{% csrf_token %}
+<table>
+{{ form.as_table }}
+<tr>
+<td><input type="submit" name="_save" value="{{ savelabel }}"></td>
+<td><input type="submit" name="_saveasnew" value="{{ otherlabel }}"></td>
+</tr>
+</table>
+</form>	
+{% endif %}
+	   
+{{ table1|safe }}
+
+{% if graphstoshow %}
+			 {% for entry2 in graphstoshow %} 
+				   <a href ="{{ entry2 }}"> <img src="{{ entry2 }}" alt="some_text" width="500"/>  </a>
+        {% endfor %}
+
+{% endif %}
+
+{% if calculation %} 
+   	    <h2> results</h2>
+   	    
+						<div id="dataTable_views">
+
+							<table id="modcod" style="width:100%;" cellpadding="0" cellspacing="0" border="0">
+                            </table>
+						</div>	
+
+{% endif %}	
+
+
+{% endblock %}
+
+
+	
+	
+
+
+
+

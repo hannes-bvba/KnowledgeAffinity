@@ -1,0 +1,182 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+{% block title %}{{ title }} | {% trans 'K&A' %}{% endblock %}
+{% block branding %}
+<h1 id="site-name">{% trans '<img src="/images/logo.png" width=50>  Knowledge and affinity matrix : ' %}{{ titleHead }}</h1>
+
+{% endblock %}
+{% block extrahead %}
+
+<meta http-equiv=refresh content={{ refreshrate }} />
+
+
+<script src="/scripts/jquery-latest.js" type="text/javascript"></script>
+<script type="text/javascript" language="javascript" src="/scripts/DataTables-1.8.2/media/js/jquery.dataTables.min.js"></script>
+<script src="/scripts/DataTables-1.8.2/extras/TableTools/media/js/ZeroClipboard.js" charset="utf-8" type="text/javascript"></script>
+<script src="/scripts/DataTables-1.8.2/extras/TableTools/media/js/TableTools.js" charset="utf-8" type="text/javascript"></script>
+<!-- <script src="/scripts/JQuery-DataTables-ColumnFilter/media/js/jquery.dataTables.columnFilter.js" type="text/javascript">type="text/javascript"></script>-->
+<link href="/scripts/demo_table.css" rel="stylesheet" type="text/css" />
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-36895507-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#demo').html( '<table cellpadding="0" cellspacing="0" border="0" class="display" id="sat_table"></table>' );
+    $('#sat_table').dataTable( {
+    	"iDisplayLength": -1,
+    	"aLengthMenu" : [[10, 25, 50, -1], [10, 25, 50, "All"]],
+    	"bStateSave": true,
+		"sDom": 'T<"clear">lfrtip',
+		"oTableTools": {
+			"sSwfPath": "/scripts/DataTables-1.8.2/extras/TableTools/media/swf/copy_cvs_xls_pdf.swf"
+		},
+        "aaData": [
+         {% for entry in values %}
+        
+    	       		[
+			  		   {{ forloop.counter }},
+			  	       {% for x in entry %}
+    	       			
+    	       				"{{ x }}", 
+			        	  {% endfor %}
+    	       		 ],
+    	  {% endfor %}
+        
+        ],
+        "aoColumns": [
+            { "sTitle": "Line","sWidth":"5%" },
+            { "sTitle": "Name" },
+            { "sTitle": "Value"},
+            { "sTitle": "Units","sWidth":"5%"}
+            
+        ]
+        
+        
+    } );   
+
+    $('#demo').html( '<table cellpadding="0" cellspacing="0" border="0" class="display" id="modcod"></table>' );
+    $('#modcod').dataTable( {
+    	"iDisplayLength": -1,
+    	"aLengthMenu" : [[10, 25, 50, -1], [10, 25, 50, "All"]],
+    	"bStateSave": true,
+		"sDom": 'T<"clear">lfrtip',
+		"oTableTools": {
+			"sSwfPath": "/scripts/DataTables-1.8.2/extras/TableTools/media/swf/copy_cvs_xls_pdf.swf"
+		},
+        "aaData": [
+         {% for entry in dataModCodTable %}
+        
+    	       		[
+			  	       {% for x in entry %}
+    	       			
+    	       				"{{ x }}", 
+			        	  {% endfor %}
+    	       		 ],
+    	  {% endfor %}
+        
+        ],
+        "aoColumns": [
+        {% for entry in headersModCodTable %}
+            { "sTitle": "{{ entry }}" },
+        {% endfor %}
+            
+        ]
+        
+        
+    } );   
+
+
+
+
+
+} );
+</script>
+
+<link href="/scripts/dropDown.css" rel="stylesheet" type="text/css" /> 
+<script type="text/javascript">
+$(document).ready(function() {
+
+    $('#navze li').hover(
+        function () {
+            //show its submenu
+            $('ul', this).slideDown(100);
+ 
+        }, 
+        function () {
+            //hide its submenu
+            $('ul', this).slideUp(100);         
+        }
+    );
+} );
+</script>     
+
+
+
+
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<style type="text/css">
+  html { height: 100% }
+  body { height: 100%; margin: 0px; padding: 0px }
+  #map_canvas { height: 100% }
+</style>
+{% endblock %}
+{% block initialize %}onload="initialize()"{% endblock %}
+
+{% block extrastyle %}
+<style>
+#header{ background-color: #F25B18; border-bottom: solid 3px #999; }
+ 
+#branding h1{ color: #fff; }
+.module h2, .module caption, .inline-group h2 { background:#ccc url(/admin_media/img/admin/nav-bg.gif) bottom left repeat-x; color: #333940; }
+a.section:link, a.section:visited { color: #666666; }
+</style>
+{% endblock %}
+{% block content_header_menu %}
+{% endblock %}
+{% block content %}
+<div id="menu" style="background-color:#F25B18; position:absolute; top:55px; left: 0px; width:100%" >
+{{ menu|safe }}
+</div>
+<br>
+{% if values %}
+   	    <h2> Results</h2>
+						<div id="dataTable_views">
+
+							<table id="sat_table" style="width:100%;" cellpadding="0" cellspacing="0" border="0">
+                            </table>
+						</div>
+{% endif %}	
+
+              <table border="1" style="border-collapse: separate; border-spacing: 1px;">
+         {% for entry in dataModCodTable %}
+                <tr>
+			  	       {% for x in entry %}
+	            	    <td style="padding-left: 5px;border-right-width: 1px;border-right-style: solid;padding-right: 10px;background-color: {{ x.color }}"> {{ x.value|safe }}</td>
+			        	  {% endfor %}
+				   </tr>
+              {% endfor %}
+			</table>
+
+
+
+
+{% endblock %}
+
+
+	
+	
+
+
+
+
